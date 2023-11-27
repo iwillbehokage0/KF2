@@ -1,2 +1,2 @@
-# FHT [Fail's Harder Tournament](https://discord.gg/uZZn7sRy)
+# FHT [[Fail's Harder Tournament]](https://discord.gg/uZZn7sRy)
 Stat files for submission from FHT
