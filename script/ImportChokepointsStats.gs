@@ -188,8 +188,6 @@ function parseChokepointsStatsFile(input, customOrder) {
     data.sort((a, b) => a[6].toLowerCase() < b[6].toLowerCase() ? -1 : (a[6].toLowerCase() > b[6].toLowerCase()) ? 1 : 0)
   }
 
-  console.log(data)
-
   // 5. Get a proper date format & put date below map name
   // P.S. No fucking library considers this date valid,
   //      so I had to create this stupidity in order
