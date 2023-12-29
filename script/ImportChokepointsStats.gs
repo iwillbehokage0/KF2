@@ -87,6 +87,9 @@ const playerStatsOrder = [
   stats.doshEarned
 ]
 
+/**
+ * Array that defines order of players
+ */
 const playerOrder = [
   "Player 1",
   "Player 2",
