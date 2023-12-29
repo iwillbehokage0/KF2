@@ -3,11 +3,10 @@
  * 
  * @customfunction
  */
-function ImportChokepointsStats(url) {
+function ImportChokepointsStats(url, customOrder) {
   let rawJson = UrlFetchApp.fetch(url);
   let jsonObject = JSON.parse(rawJson.getContentText());
-
-  return parseChokepointsStatsFile(jsonObject)
+  return parseChokepointsStatsFile(jsonObject, customOrder)
 }
 
 /**
@@ -88,13 +87,22 @@ const playerStatsOrder = [
   stats.doshEarned
 ]
 
+const playerOrder = [
+  "Player 1",
+  "Player 2",
+  "Player 3",
+  "Player 4",
+  "Player 5",
+  "Player 6"
+]
+
 /**
  * Function used to parse stats file generated from CD Chokepoints edition
  *
  * @param jsonObject JSON object containing game data
  * @returns [][] Two dimensional array that will contain all the stats ready for display on the spreadsheet
  */
-function parseChokepointsStatsFile(input) {
+function parseChokepointsStatsFile(input, customOrder) {
   // 1. Create array to store all the data
   let data = [];
 
@@ -110,7 +118,6 @@ function parseChokepointsStatsFile(input) {
       mdIndex = playerIndex;
     }
   })
-
 
   // 2.2 Fix duplication of: Larges, Fleshpounds, Scrakes
   if (
@@ -135,7 +142,7 @@ function parseChokepointsStatsFile(input) {
     input["stats"][mdIndex][stats.huskNormal] = '0';
     input["stats"][mdIndex][stats.huskBackpacksRages] = '0';
   }
-  
+
   // 3. Parse actual data
   // Iterate through all the stats
   input["stats"].forEach((player, playerIndex) => {
@@ -160,8 +167,28 @@ function parseChokepointsStatsFile(input) {
     });
   });
 
-  // 4. Sort player objects alphabetically based on alias
-  data.sort((a, b) => a[6].toLowerCase() < b[6].toLowerCase() ? -1 : (a[6].toLowerCase() > b[6].toLowerCase()) ? 1 : 0)
+  // 4. Sort player objects
+  //    By default, we sort alphabetically.
+  //    However, if customOrder parameter is true,
+  //    We will sort in order specified in playerOrder constant.
+  if (customOrder === true) {
+    // This logic here extracts players from stats file and puts them in correct order.
+    // This is also done this way to accomodate for roster changes and some spreadsheets
+    // possibly having more than 6 different players mentioned.
+    let order = []
+    data.forEach((playerData) => order[playerOrder.indexOf(playerData[6])] = playerData[6])
+
+    // Little hack to remove empty items.
+    order.filter((item) => item)
+
+    let newData = []
+    data.forEach((playerData) => newData[order.indexOf(playerData[6])] = playerData)
+    data = newData
+  } else {
+    data.sort((a, b) => a[6].toLowerCase() < b[6].toLowerCase() ? -1 : (a[6].toLowerCase() > b[6].toLowerCase()) ? 1 : 0)
+  }
+
+  console.log(data)
 
   // 5. Get a proper date format & put date below map name
   // P.S. No fucking library considers this date valid,
