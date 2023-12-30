@@ -5,19 +5,16 @@
  * @param customOrder     ->  flag to indicate whether players should be sorted alphabetically or in custom order.
  *                            @see playerOrder constant for more information and list of players
  * 
- * @param zedTypeCapital  ->  flag to indicate whether zed type text should start with capital letter
+ * @param zedTypeCapital  ->  flag to indicate whether ZT & Alias should start with capital letter
  * 
  * @customfunction
  */
-function ImportChokepointsStats(url, customOrder, zedTypeCapital) {
+function ImportChokepointsStats(url, customOrder, capital) {
   let rawJson = UrlFetchApp.fetch(url);
   let jsonObject = JSON.parse(rawJson.getContentText());
-  return parseChokepointsStatsFile(jsonObject, customOrder, zedTypeCapital)
+  return parseChokepointsStatsFile(jsonObject, customOrder, capital)
 }
 
-/**
- * Test function for internal testing
- */
 function testImportChokepointsStats() {
   let rawJson = UrlFetchApp.fetch("https://raw.githubusercontent.com/iwillbehokage0/KF2/main/Stats%20-%20Bober%20Gang/KF-InfernalRealm%20ts-mig-v3%2064mm%20harder.json");
   let jsonObject = JSON.parse(rawJson.getContentText());
@@ -115,13 +112,20 @@ const playerStatsOrder = [
  * with the order maintained correctly.
  */
 const playerOrder = [
-  "Player 1",
-  "Player 2",
-  "Player 3",
-  "Player 4",
-  "Player 5",
-  "Player 6"
+   "Player 1",
+   "Player 2",
+   "Player 3",
+   "Player 4",
+   "Player 5",
+   "Player 6"
 ].map((item) => item.toLowerCase())
+
+/**
+ * Helper function to capitalize first letter of the word
+ */
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 /**
  * Function used to parse stats file generated from CD Chokepoints edition
@@ -129,7 +133,7 @@ const playerOrder = [
  * @param jsonObject JSON object containing game data
  * @returns [][] Two dimensional array that will contain all the stats ready for display on the spreadsheet
  */
-function parseChokepointsStatsFile(input, customOrder, zedTypeCapital) {
+function parseChokepointsStatsFile(input, customOrder, capital) {
   // 1. Create array to store all the data
   let data = [];
 
@@ -249,9 +253,11 @@ function parseChokepointsStatsFile(input, customOrder, zedTypeCapital) {
   mainStatsOrder.forEach((name, index) => data[0][index] = input[name])
 
   // 7. Make ZedType spelling start with capital letter if appropriate flag is set.
-  if (zedTypeCapital == true) {
-    data[0][5] = data[0][5].charAt(0).toUpperCase() + data[0][5].slice(1)
+  if (capital == true) {
+    data[0][5] = capitalizeFirstLetter(data[0][5])
+
+    data.map((item) => item[6] = capitalizeFirstLetter(item[6]))
   }
-  
+
   return data;
 }
