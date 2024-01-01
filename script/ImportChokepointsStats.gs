@@ -16,9 +16,9 @@ function ImportChokepointsStats(url, customOrder, capital) {
 }
 
 function testImportChokepointsStats() {
-  let rawJson = UrlFetchApp.fetch("https://raw.githubusercontent.com/iwillbehokage0/KF2/main/Stats%20-%20Bober%20Gang/KF-InfernalRealm%20ts-mig-v3%2064mm%20harder.json");
+  let rawJson = UrlFetchApp.fetch("https://raw.githubusercontent.com/iwillbehokage0/KF2/main/Stats%20-%20Six%20Nightcore%20Gamers%20%5B6ng%5D/KF-ContainmentStation%20ts-mig-v3-plus%2064mm%20nightcore.json");
   let jsonObject = JSON.parse(rawJson.getContentText());
-  return parseChokepointsStatsFile(jsonObject, true, true);
+  return parseChokepointsStatsFile(jsonObject);
 }
 
 /**
@@ -112,12 +112,12 @@ const playerStatsOrder = [
  * with the order maintained correctly.
  */
 const playerOrder = [
-   "Player 1",
-   "Player 2",
-   "Player 3",
-   "Player 4",
-   "Player 5",
-   "Player 6"
+  "Player 1",
+  "Player 2",
+  "Player 3",
+  "Player 4",
+  "Player 5",
+  "Player 6"
 ].map((item) => item.toLowerCase())
 
 /**
@@ -134,10 +134,10 @@ function capitalizeFirstLetter(str) {
  * @returns [][] Two dimensional array that will contain all the stats ready for display on the spreadsheet
  */
 function parseChokepointsStatsFile(input, customOrder, capital) {
-  // 1. Create array to store all the data
+  // 1.   Create array to store all the data
   let data = [];
 
-  // 2. Fix duplication of stats between Medic & Commando in certain cases
+  // 2.   Fix duplication of stats between Medic & Commando in certain cases
   let cmIndex;
   let mdIndex;
 
@@ -150,37 +150,41 @@ function parseChokepointsStatsFile(input, customOrder, capital) {
     }
   })
 
-  // 2.2 Fix duplication of: Larges, Fleshpounds, Scrakes
-  if (
-    input["stats"][cmIndex][stats.largeKills] === input["stats"][mdIndex][stats.largeKills]
-    && input["stats"][cmIndex][stats.fleshpounds] === input["stats"][mdIndex][stats.fleshpounds]
-    && input["stats"][cmIndex][stats.scrakes] === input["stats"][mdIndex][stats.scrakes]
-  ) {
-    input["stats"][mdIndex][stats.largeKills] = '0';
-    input["stats"][mdIndex][stats.fleshpounds] = '0';
-    input["stats"][mdIndex][stats.scrakes] = '0';
+  // 2.2  Fix duplication of: Larges, Fleshpounds, Scrakes
+  //      However, we also need to check if Medic was present in that game
+  //      and, only then, we do this step.
+  if (mdIndex != undefined) {
+    if (
+      input["stats"][cmIndex][stats.largeKills] === input["stats"][mdIndex][stats.largeKills]
+      && input["stats"][cmIndex][stats.fleshpounds] === input["stats"][mdIndex][stats.fleshpounds]
+      && input["stats"][cmIndex][stats.scrakes] === input["stats"][mdIndex][stats.scrakes]
+    ) {
+      input["stats"][mdIndex][stats.largeKills] = '0';
+      input["stats"][mdIndex][stats.fleshpounds] = '0';
+      input["stats"][mdIndex][stats.scrakes] = '0';
+    }
+
+    // 2.3 Fix duplication of: Husks, Husk B, Husk N, Husk R
+    if (
+      input["stats"][cmIndex][stats.husks] === input["stats"][mdIndex][stats.husks]
+      && input["stats"][cmIndex][stats.huskBackpacks] === input["stats"][mdIndex][stats.huskBackpacks]
+      && input["stats"][cmIndex][stats.huskNormal] === input["stats"][mdIndex][stats.huskNormal]
+      && input["stats"][cmIndex][stats.huskBackpacksRages] === input["stats"][mdIndex][stats.huskBackpacksRages]
+    ) {
+      input["stats"][mdIndex][stats.husks] = '0';
+      input["stats"][mdIndex][stats.huskBackpacks] = '0';
+      input["stats"][mdIndex][stats.huskNormal] = '0';
+      input["stats"][mdIndex][stats.huskBackpacksRages] = '0';
+    }
   }
 
-  // 2.3 Fix duplication of: Husks, Husk B, Husk N, Husk R
-  if (
-    input["stats"][cmIndex][stats.husks] === input["stats"][mdIndex][stats.husks]
-    && input["stats"][cmIndex][stats.huskBackpacks] === input["stats"][mdIndex][stats.huskBackpacks]
-    && input["stats"][cmIndex][stats.huskNormal] === input["stats"][mdIndex][stats.huskNormal]
-    && input["stats"][cmIndex][stats.huskBackpacksRages] === input["stats"][mdIndex][stats.huskBackpacksRages]
-  ) {
-    input["stats"][mdIndex][stats.husks] = '0';
-    input["stats"][mdIndex][stats.huskBackpacks] = '0';
-    input["stats"][mdIndex][stats.huskNormal] = '0';
-    input["stats"][mdIndex][stats.huskBackpacksRages] = '0';
-  }
-
-  // 3. Parse actual data
-  // Iterate through all the stats
+  // 3.   Parse actual data
+  //      Iterate through all the stats
   input["stats"].forEach((player, playerIndex) => {
-    // Create new row for each player
+    //    Create new row for each player
     data[playerIndex] = [];
 
-    // iterate over each player and collect data
+    //    iterate over each player and collect data
     playerStatsOrder.forEach((playerStatName, playerStatIndex) => {
       // account for main stats that should be inserted in the first row
       let actualIndex = playerStatIndex + mainStatsOrder.length;
@@ -198,10 +202,10 @@ function parseChokepointsStatsFile(input, customOrder, capital) {
     });
   });
 
-  // 4. Sort player objects
-  //    By default, we sort alphabetically.
-  //    However, if customOrder parameter is true,
-  //    We will sort in order specified in playerOrder constant.
+  // 4.   Sort player objects
+  //      By default, we sort alphabetically.
+  //      However, if customOrder parameter is true,
+  //      We will sort in order specified in playerOrder constant.
 
   if (customOrder === true) {
     // This logic here extracts players from stats file and puts them in correct order.
