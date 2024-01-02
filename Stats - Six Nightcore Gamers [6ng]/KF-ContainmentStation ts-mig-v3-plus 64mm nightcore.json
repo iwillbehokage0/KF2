@@ -1,6 +1,6 @@
 {
   "mapName": "KF-Containment Station",
-  "date": "2024-1-1-21:52",
+  "date": "2024-01-01-21:52",
   "spawnCycle": "ts_mig_v3_plus",
   "maxMonsters": 64,
   "cohortSize": 7,
