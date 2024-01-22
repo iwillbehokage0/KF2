@@ -223,7 +223,7 @@ function parseChokepointsStatsFile(input, customOrder, capital) {
     })
 
     // Little hack to remove empty items.
-    order.filter((item) => item)
+    order = order.filter((item) => item)
 
     if (order.length != 6) {
       throw new Error("Your player data is incomplete or the stat file is wrong. Please double check.")
