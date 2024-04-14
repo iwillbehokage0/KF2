@@ -120,6 +120,29 @@
       "headshots": 1384,
       "accuracy": 77,
       "headshotAccuracy": 76
+    },
+    {
+      "alias": "Uranium",
+      "steamId": "76561198135641353",
+      "perk": "Commando",
+      "doshEarned": 15462,
+      "largeKills": 7,
+      "fleshpounds": 1,
+      "scrakes": 6,
+      "husks": 25,
+      "huskBackpacks": 17,
+      "huskNormal": 8,
+      "huskBackpacksRages": 2,
+      "largesFrozen": 0,
+      "healsGiven": 0,
+      "healsReceived": 311,
+      "damageDealt": 182049,
+      "damageTaken": 375,
+      "shotsFired": 4260,
+      "shotsHit": 2031,
+      "headshots": 657,
+      "accuracy": 48,
+      "headshotAccuracy": 32
     }
   ]
 }
