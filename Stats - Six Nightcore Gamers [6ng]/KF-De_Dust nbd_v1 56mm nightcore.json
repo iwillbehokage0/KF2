@@ -1,7 +1,7 @@
 {
   "mapName": "KF-De_Dust",
   "date": "2024-09-08-16:18",
-  "spawnCycle": "ini",
+  "spawnCycle": "nbd_v1",
   "maxMonsters": 56,
   "cohortSize": 10,
   "zedsType": "nightcore",
